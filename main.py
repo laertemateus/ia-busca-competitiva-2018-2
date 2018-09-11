@@ -3,8 +3,9 @@
 
 from random import *
 from time import *
-from numpy import *
+import numpy as np
 import pygame
+import os
 
 """
 Classe base e inicialização do trabalho de IA
@@ -29,7 +30,7 @@ class Game:
         self.__size = 50 if size is None else size
 
         # Constrói o mapa
-        self.__map = ndarray([self.__size,self.__size],int)
+        self.__map = np.ndarray([self.__size,self.__size],int)
         water_prob = .02 + self.__rand.random() * .10
 
         for i in range(self.__size):
@@ -53,11 +54,28 @@ class Game:
                     break
 
 
-    def __update():
+    def __update(self):
         """
         Atualiza o jogo
         """
         pass
+        
+    def __display(self):
+        """
+        Renderiza na tela o jogo
+        """
+
+        # Mapa
+        for i,j in np.ndindex(self.__map.shape):
+            c = pygame.Color(0,0,255,255) if self.__map[i,j] == -1 else pygame.Color(0, 25 + int(25 * self.__map[i,j]),0,255)
+            pygame.draw.rect(pygame.display.get_surface(), c, (i*16, j*16, 16, 16))
+
+        # Bordas
+        for k in range(0,800,16):
+            pygame.draw.line(pygame.display.get_surface(), pygame.Color('white'), (k,0), (k,800))
+            pygame.draw.line(pygame.display.get_surface(), pygame.Color('white'), (0,k), (800,k))
+
+        pygame.display.update()
 
     def run(self):
         """
@@ -69,12 +87,11 @@ class Game:
         # Pygame init config
         pygame.init()
         pygame.display.set_caption('Hello world!')
-        pygame.display.set_mode((500, 400), 0, 32)
+        pygame.display.set_mode((900, 900), 0, 32)
 
         while running:
             self.__update()
             self.__display()
-            pygame.time.delay(3000)
 
             for e in pygame.event.get():
                 if e.type == pygame.QUIT:
@@ -86,5 +103,6 @@ class Game:
 
 
 if __name__ == '__main__':
+    os.environ['SDL_VIDEO_CENTERED'] = '1'
     game = Game()
     game.run()
