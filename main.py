@@ -17,7 +17,7 @@ class Game:
     Classe do jogo
     """
 
-    def __init__(self, seed = None, size = None):
+    def __init__(self, seed = None, size = 30):
         """
         Construtor da classe
 
@@ -27,7 +27,7 @@ class Game:
 
         # Inicializa atributos da classe
         self.__rand = Random(time() if seed is None else seed)
-        self.__size = 50 if size is None else size
+        self.__size = size
 
         # Constrói o mapa
         self.__map = np.ndarray([self.__size,self.__size],int)
@@ -64,16 +64,20 @@ class Game:
         """
         Renderiza na tela o jogo
         """
+        # Calcula o tamanho do bloco
+        bw = 900 / self.__size
+        step = 0
 
         # Mapa
         for i,j in np.ndindex(self.__map.shape):
             c = pygame.Color(0,0,255,255) if self.__map[i,j] == -1 else pygame.Color(0, 25 + int(25 * self.__map[i,j]),0,255)
-            pygame.draw.rect(pygame.display.get_surface(), c, (i*16, j*16, 16, 16))
+            pygame.draw.rect(pygame.display.get_surface(), c, (i*bw, j*bw, bw, bw))
 
         # Bordas
-        for k in range(0,800,16):
-            pygame.draw.line(pygame.display.get_surface(), pygame.Color('white'), (k,0), (k,800))
-            pygame.draw.line(pygame.display.get_surface(), pygame.Color('white'), (0,k), (800,k))
+        while step <= 900:
+            pygame.draw.line(pygame.display.get_surface(), pygame.Color('white'), (step,0), (step,900))
+            pygame.draw.line(pygame.display.get_surface(), pygame.Color('white'), (0,step), (900,step))
+            step += bw
 
         pygame.display.update()
 
@@ -104,5 +108,5 @@ class Game:
 
 if __name__ == '__main__':
     os.environ['SDL_VIDEO_CENTERED'] = '1'
-    game = Game()
+    game = Game(size=20)
     game.run()
