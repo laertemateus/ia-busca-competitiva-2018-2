@@ -1,11 +1,12 @@
 #!/usr/bin/python3
 #-*-encoding:utf8-*-
 
-from random import *
-from time import *
+import random
+import time
 import numpy as np
 import pygame
 import os
+import argparse
 
 """
 Classe base e inicialização do trabalho de IA
@@ -17,7 +18,7 @@ class Game:
     Classe do jogo
     """
 
-    def __init__(self, seed = None, size = 30):
+    def __init__(self, seed, size):
         """
         Construtor da classe
 
@@ -26,12 +27,12 @@ class Game:
         """
 
         # Inicializa atributos da classe
-        self.__rand = Random(time() if seed is None else seed)
-        self.__size = size
+        self.__rand = random.Random(time.time() if seed is None else seed)
+        self.__size = 30 if size is None else size
 
         # Constrói o mapa
         self.__map = np.ndarray([self.__size,self.__size],int)
-        water_prob = .02 + self.__rand.random() * .10
+        water_prob = .07 + self.__rand.random() * .10
 
         for i in range(self.__size):
             for j in range(self.__size):
@@ -70,7 +71,7 @@ class Game:
 
         # Mapa
         for i,j in np.ndindex(self.__map.shape):
-            c = pygame.Color(0,0,255,255) if self.__map[i,j] == -1 else pygame.Color(0, 25 + int(25 * self.__map[i,j]),0,255)
+            c = pygame.Color(0,0,255,255) if self.__map[i,j] == -1 else pygame.Color(0, 100 + int(15 * self.__map[i,j]),0,255)
             pygame.draw.rect(pygame.display.get_surface(), c, (i*bw, j*bw, bw, bw))
 
         # Bordas
@@ -78,6 +79,11 @@ class Game:
             pygame.draw.line(pygame.display.get_surface(), pygame.Color('white'), (step,0), (step,900))
             pygame.draw.line(pygame.display.get_surface(), pygame.Color('white'), (0,step), (900,step))
             step += bw
+
+        # recursos
+        for i,j,t in self.__resources:
+            c = pygame.Color('yellow') if t == 'g' else pygame.Color('brown')
+            pygame.draw.ellipse(pygame.display.get_surface(), c, (i*bw + 1,j*bw + 1, bw - 1, bw - 1))
 
         pygame.display.update()
 
@@ -88,9 +94,9 @@ class Game:
 
         running = True
 
-        # Pygame init config
+        # Pygame init
         pygame.init()
-        pygame.display.set_caption('Hello world!')
+        pygame.display.set_caption('IA-Empires!')
         pygame.display.set_mode((900, 900), 0, 32)
 
         while running:
@@ -103,10 +109,16 @@ class Game:
                     running = False
 
 
-
-
-
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+
+    # Configuração do ArgParse
+    parser.add_argument('--size', help='World Size',type=int,default=30)
+    parser.add_argument('--seed', help='Seed for Pseudo-Random numbers',type=float,default=None)
+    parser.add_argument('agents', help='Agents to be used in the execution',type=str,nargs='+')
+    args = parser.parse_args()
+
+    # Configuração do ambiente
     os.environ['SDL_VIDEO_CENTERED'] = '1'
-    game = Game(size=20)
+    game = Game(args.size,args.seed)
     game.run()
