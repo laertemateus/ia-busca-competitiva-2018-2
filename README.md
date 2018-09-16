@@ -1,6 +1,6 @@
 # IA-Empires
-# Trabalho da disciplina de IA 
-# Engenharia de computação IFMG - Campus Bambuí - 2018/2
+## Trabalho da disciplina de IA 
+## Engenharia de computação IFMG - Campus Bambuí - 2018/2
 
 O trabalho consiste em montar um agente que maximize a pontuação a ser atingida de tal modo que cada jogador possa executar uma ação em cada turno (esquerda, direita, cima e baixo).
 
