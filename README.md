@@ -54,11 +54,11 @@ Onde
 
 1. map: Matriz (numpy) de nxn com a configuração do relevo
 
-2. resources: Lista com tuplas no formato (<linha>,<coluna>,<recurso>) onde <recurso> pode ser 'w' (madeira) ou 'g' (ouro) representado a posição no mapa de todos os recursos disponíveis
+2. resources: Lista com tuplas no formato (LINHA,COLUNA,RECURSO) onde RECURSO pode ser 'w' (madeira) ou 'g' (ouro) representado a posição no mapa de todos os recursos disponíveis
 
-3. enemies_pos: Lista com as tuplas (<linha>,<coluna>,<carrying>) de todos os adversários do agente. <carrying> indica se o adversário está carregando ouro ('g'), madeira ('w') ou nada (None)
+3. enemies_pos: Lista com as tuplas (LINHA,COLUNA,CARRYING) de todos os adversários do agente. CARRYING indica se o adversário está carregando ouro ('g'), madeira ('w') ou nada (None)
 
-4. enemies_bases: Lista com as tuplas (<linha>,<coluna>) da base de todos os adversários
+4. enemies_bases: Lista com as tuplas (LINHA,COLUNA) da base de todos os adversários
 
 5. player_pos: Tupla com a linha e coluna da posição atual do agente
 
