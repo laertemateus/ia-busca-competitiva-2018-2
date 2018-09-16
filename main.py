@@ -29,6 +29,8 @@ class Game:
         # Inicializa atributos da classe
         self.__rand = random.Random(time.time() if seed is None else seed)
         self.__size = 30 if size is None else size
+        self.__agents = list()
+        self.__bases = list()
 
         # Constrói o mapa
         self.__map = np.ndarray([self.__size,self.__size],int)
@@ -54,6 +56,21 @@ class Game:
                     self.__resources.append((m,n, 'w' if .5 < self.__rand.random() else 'g'))
                     break
 
+    def add_agent(self, agent):
+        """
+        Adiciona o Agente ao ambiente
+
+        @param agent: Módulo do agente
+        """
+        self.__agents.append(agent)
+
+        while True:
+            m = int(self.__rand.random() * self.__size)
+            n = int(self.__rand.random() * self.__size)
+
+            if (m,n) not in self.__resources and self.__map[m,n] != -1:
+                self.__bases.append((m,n))
+                break
 
     def __update(self):
         """
@@ -120,5 +137,12 @@ if __name__ == '__main__':
 
     # Configuração do ambiente
     os.environ['SDL_VIDEO_CENTERED'] = '1'
-    game = Game(args.size,args.seed)
+    game = Game(args.seed,args.size)
+    
+    # Registro dos agentes
+    for a in args.agents:
+        am = __import__(a)
+        print('Registring %s...'%am.__name__)
+        game.add_agent(am)
+
     game.run()
