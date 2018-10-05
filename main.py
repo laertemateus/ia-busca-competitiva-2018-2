@@ -184,6 +184,10 @@ class Game:
             c = pygame.Color('yellow') if t == 'g' else pygame.Color('brown')
             pygame.draw.ellipse(pygame.display.get_surface(), c, (i*bw + 1,j*bw + 1, bw - 1, bw - 1))
 
+        # Bases
+        for i,b in enumerate(self.__bases):
+            pygame.display.get_surface().blit(pygame.transform.scale(self.__house, (int(bw),int(bw))), (b[0] * bw, b[1] * bw))
+
         # Agentes
         for i,a in enumerate(self.__agents):
             pygame.display.get_surface().blit(pygame.transform.scale(self.__sprites[i], (int(bw),int(bw))), (self.__positions[i][0] * bw, self.__positions[i][1] * bw) )
@@ -210,6 +214,7 @@ class Game:
             pygame.image.load('sprites/ikki.png').convert_alpha(),
             pygame.image.load('sprites/hyoga.png').convert_alpha(),
         ]
+        self.__house = pygame.image.load('sprites/house.png').convert_alpha()
 
         # Toca a música tema
         pygame.mixer.music.load('sfx/theme.mp3')
