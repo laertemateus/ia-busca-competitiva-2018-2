@@ -36,7 +36,8 @@ class Game:
         self.__positions = list()
         self.__carry = list()
         self.__death_coutdown = list()
-
+        self.__turn = 0
+        
         # Constrói o mapa
         self.__map = np.ndarray([self.__size,self.__size],int)
         water_prob = .07 + self.__rand.random() * .10
@@ -56,8 +57,9 @@ class Game:
             while True:
                 m = int(self.__rand.random() * self.__size)
                 n = int(self.__rand.random() * self.__size)
+                resources = list()
 
-                if (m,n) not in self.__resources and self.__map[m,n] != -1:
+                if (m,n) not in map(lambda x:(x[0],x[1]),self.__resources) and self.__map[m,n] != -1:
                     self.__resources.append((m,n, 'w' if .5 < self.__rand.random() else 'g', True))
                     break
 
@@ -74,7 +76,7 @@ class Game:
             m = int(self.__rand.random() * self.__size)
             n = int(self.__rand.random() * self.__size)
 
-            if (m,n) not in self.__resources and self.__map[m,n] != -1:
+            if (m,n) not in map(lambda x:(x[0],x[1]),self.__resources) and self.__map[m,n] != -1:
                 self.__bases.append((m,n))
                 self.__positions.append((m,n))
                 self.__carry.append(None)
@@ -85,6 +87,10 @@ class Game:
         """
         Atualiza o jogo
         """
+
+        # Para o jogo se chegar à 10.000 turnos
+        if self.__turn == 1e4:
+            pass
 
         # Requisita aos agentes o movimento
         for i,a in enumerate(self.__agents):
@@ -110,8 +116,20 @@ class Game:
             elif m == 4: # Mover para a esquerda
                 k2 = (self.__positions[i][0]-1,self.__positions[i][1])
 
+            # Atualiza pontuação baseado novimento e a posição do agente
             self.__scores[i] += -abs(self.__map[k1[0]][k1[1]] - self.__map[k2[0]][k2[1]]) - 1 if self.__map[k1[0]][k1[1]] != -1 and self.__map[k2[0]][k2[1]] != -1 else -10
             self.__positions[i] = (k2[0], k2[1])
+
+            # Verifica se o agente chegou à base com recurso
+            if self.__positions[i] == self.__bases[i] and self.__carry[i] is not None:
+                self.__scores[i] += 30 if self.__carry[i] == 'w' else 50
+                self.__carry[i] = None
+            
+            # Verifica se o agente está sob um recurso
+            if self.__positions[i] in map(lambda x:(x[0],x[1]),self.__resources) and self.__carry[i] is None:
+                p = list(map(lambda x:(x[0],x[1]),self.__resources)).index(self.__positions[i])
+                self.__carry[i] = self.__resources[p][0]
+                del self.__resources[p]
 
         # Verifica se houve alguma colisão entre os agentes
         for i in range(len(self.__agents)):
@@ -166,6 +184,10 @@ class Game:
             c = pygame.Color('yellow') if t == 'g' else pygame.Color('brown')
             pygame.draw.ellipse(pygame.display.get_surface(), c, (i*bw + 1,j*bw + 1, bw - 1, bw - 1))
 
+        # Agentes
+        for i,a in enumerate(self.__agents):
+            pygame.display.get_surface().blit(pygame.transform.scale(self.__sprites[i], (int(bw),int(bw))), (self.__positions[i][0] * bw, self.__positions[i][1] * bw) )
+
         pygame.display.update()
 
     def run(self):
@@ -178,11 +200,25 @@ class Game:
         # Pygame init
         pygame.init()
         pygame.display.set_caption('IA-Empires!')
-        pygame.display.set_mode((1200, 900), 0, 32)
+        pygame.display.set_mode((1000, 750), 0, 32)
+
+        # Carrega os sprites
+        self.__sprites = [
+            pygame.image.load('sprites/seiya.png').convert_alpha(),
+            pygame.image.load('sprites/shiryu.png').convert_alpha(),
+            pygame.image.load('sprites/shun.png').convert_alpha(),
+            pygame.image.load('sprites/ikki.png').convert_alpha(),
+            pygame.image.load('sprites/hyoga.png').convert_alpha(),
+        ]
+
+        # Toca a música tema
+        pygame.mixer.music.load('sfx/theme.mp3')
+        pygame.mixer.music.play(loops=-1)
 
         while running:
             self.__update()
             self.__display()
+            pygame.time.wait(1000)
 
             for e in pygame.event.get():
                 if e.type == pygame.QUIT:
