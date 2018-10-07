@@ -108,13 +108,13 @@ class Game:
             k1 = (self.__positions[i][0],self.__positions[i][1])
 
             if m == 1: # Mover para cima
-                k2 = (self.__positions[i][0],self.__positions[i][1]-1)
-            elif m == 2: # Mover para baixo
-                k2 = (self.__positions[i][0],self.__positions[i][1]+1)
-            elif m == 3: # Mover para a direita
-                k2 = (self.__positions[i][0]+1,self.__positions[i][1])
-            elif m == 4: # Mover para a esquerda
                 k2 = (self.__positions[i][0]-1,self.__positions[i][1])
+            elif m == 2: # Mover para baixo
+                k2 = (self.__positions[i][0]+1,self.__positions[i][1])
+            elif m == 3: # Mover para a direita
+                k2 = (self.__positions[i][0],self.__positions[i][1]+1)
+            elif m == 4: # Mover para a esquerda
+                k2 = (self.__positions[i][0],self.__positions[i][1]-1)
 
             # Atualiza pontuação baseado novimento e a posição do agente
             self.__scores[i] += -abs(self.__map[k1[0]][k1[1]] - self.__map[k2[0]][k2[1]]) - 1 if self.__map[k1[0]][k1[1]] != -1 and self.__map[k2[0]][k2[1]] != -1 else -10
@@ -128,7 +128,7 @@ class Game:
             # Verifica se o agente está sob um recurso
             if self.__positions[i] in map(lambda x:(x[0],x[1]),self.__resources) and self.__carry[i] is None:
                 p = list(map(lambda x:(x[0],x[1]),self.__resources)).index(self.__positions[i])
-                self.__carry[i] = self.__resources[p][0]
+                self.__carry[i] = self.__resources[p][-1]
                 del self.__resources[p]
 
         # Verifica se houve alguma colisão entre os agentes
@@ -166,7 +166,7 @@ class Game:
         step = 0
 
         # Background
-        pygame.draw.rect(pygame.display.get_surface(), pygame.Color('white'), (0,0,1200,900))
+        pygame.draw.rect(pygame.display.get_surface(), pygame.Color('white'), (0,0,1300,900))
 
         # Mapa
         for i,j in np.ndindex(self.__map.shape):

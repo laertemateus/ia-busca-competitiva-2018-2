@@ -14,4 +14,4 @@ def move(map,resources,enemies_pos, enemies_bases, player_pos, player_base, carr
     m = [MOVE_UP, MOVE_DOWN, MOVE_RIGHT, MOVE_LEFT]
     random.shuffle(m)
 
-    return m[0] # Return a Action
+    return MOVE_UP # Return a Action
