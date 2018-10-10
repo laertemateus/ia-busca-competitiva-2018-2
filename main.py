@@ -105,7 +105,7 @@ class Game:
             del e_bases[i]
 
             # Informações do inimigo
-            for j in enumerate(self.__agents):
+            for j,x in enumerate(self.__agents):
                 if j != i:
                     e_positions.append((self.__positions[j][0],self.__positions[j][1],self.__carry[j]))
 
@@ -133,7 +133,7 @@ class Game:
             # Verifica se o agente está sob um recurso
             if self.__positions[i] in map(lambda x:(x[0],x[1]),self.__resources) and self.__carry[i] is None:
                 p = list(map(lambda x:(x[0],x[1]),self.__resources)).index(self.__positions[i])
-                self.__carry[i] = self.__resources[p][-1]
+                self.__carry[i] = self.__resources[p][-2]
                 del self.__resources[p]
 
         # Verifica se houve alguma colisão entre os agentes
