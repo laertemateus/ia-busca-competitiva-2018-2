@@ -101,20 +101,25 @@ class Game:
                 continue
 
             e_bases = self.__bases[:]
-            e_positions = self.__positions[:]
+            e_positions = list()
             del e_bases[i]
-            del e_positions[i]
+
+            # Informações do inimigo
+            for j in enumerate(self.__agents):
+                if j != i:
+                    e_positions.append((self.__positions[j][0],self.__positions[j][1],self.__carry[j]))
+
             m = a.move(np.copy(self.__map), self.__resources[:], e_positions, e_bases, self.__positions[i][:], self.__bases[i][:], copy.copy(self.__carry[i]))
             k1 = (self.__positions[i][0],self.__positions[i][1])
 
             if m == 1: # Mover para cima
-                k2 = (self.__positions[i][0]-1,self.__positions[i][1])
-            elif m == 2: # Mover para baixo
-                k2 = (self.__positions[i][0]+1,self.__positions[i][1])
-            elif m == 3: # Mover para a direita
-                k2 = (self.__positions[i][0],self.__positions[i][1]+1)
-            elif m == 4: # Mover para a esquerda
                 k2 = (self.__positions[i][0],self.__positions[i][1]-1)
+            elif m == 2: # Mover para baixo
+                k2 = (self.__positions[i][0],self.__positions[i][1]+1)
+            elif m == 3: # Mover para a direita
+                k2 = (self.__positions[i][0]+1,self.__positions[i][1])
+            elif m == 4: # Mover para a esquerda
+                k2 = (self.__positions[i][0]-1,self.__positions[i][1])
 
             # Atualiza pontuação baseado novimento e a posição do agente
             self.__scores[i] += -abs(self.__map[k1[0]][k1[1]] - self.__map[k2[0]][k2[1]]) - 1 if self.__map[k1[0]][k1[1]] != -1 and self.__map[k2[0]][k2[1]] != -1 else -10
