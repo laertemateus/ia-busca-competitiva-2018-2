@@ -1,13 +1,16 @@
 #!/usr/bin/python3
 #-*-encoding:utf8-*-
 
-import random
+#
+# MÓDULOS
+#
 import time
 import numpy as np
 import pygame
 import os
 import argparse
 import copy
+import random
 
 """
 Classe base e inicialização do trabalho de IA
@@ -101,15 +104,17 @@ class Game:
                 continue
 
             e_bases = self.__bases[:]
+            e_scores = self.__scores[:]
             e_positions = list()
             del e_bases[i]
+            del e_scores[i]
 
             # Informações do inimigo
             for j,x in enumerate(self.__agents):
                 if j != i:
                     e_positions.append((self.__positions[j][0],self.__positions[j][1],self.__carry[j]))
 
-            m = a.move(np.copy(self.__map), self.__resources[:], e_positions, e_bases, self.__positions[i][:], self.__bases[i][:], copy.copy(self.__carry[i]))
+            m = a.move(np.copy(self.__map), self.__resources[:], e_positions, e_bases, self.__positions[i][:], self.__bases[i][:], copy.copy(self.__carry[i]), self.__scores[i], e_scores)
             k1 = (self.__positions[i][0],self.__positions[i][1])
 
             if m == 1: # Mover para cima
